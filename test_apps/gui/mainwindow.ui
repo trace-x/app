@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>568</width>
+    <height>371</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralWidget">
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
+     <widget class="QSplitter" name="splitter">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>568</width>
+     <height>19</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QToolBar" name="mainToolBar">
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="action_new_instance"/>
+   <addaction name="action_restart"/>
+   <addaction name="action_crash"/>
+   <addaction name="action_crash_restart"/>
+   <addaction name="action_new_thread"/>
+   <addaction name="action_show_trace"/>
+  </widget>
+  <widget class="QStatusBar" name="statusBar"/>
+  <action name="action_restart">
+   <property name="text">
+    <string>Restart</string>
+   </property>
+  </action>
+  <action name="action_crash">
+   <property name="text">
+    <string>Crash</string>
+   </property>
+  </action>
+  <action name="action_crash_restart">
+   <property name="text">
+    <string>Crash and Restart</string>
+   </property>
+  </action>
+  <action name="action_new_instance">
+   <property name="text">
+    <string>New instance</string>
+   </property>
+  </action>
+  <action name="action_new_thread">
+   <property name="text">
+    <string>New thread</string>
+   </property>
+  </action>
+  <action name="action_show_trace">
+   <property name="text">
+    <string>Show Trace</string>
+   </property>
+  </action>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <resources/>
+ <connections/>
+</ui>

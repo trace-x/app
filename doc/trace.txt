@@ -1,0 +1,49 @@
+Коммуникация осуществляется посредством разделяемой памяти, дескрипторы которой располагаются в директории
+windows: C:/ProgramData/boost_interprocess/xxxxx/
+linux: /dev/shm
+
+Глобальный флаг: trace_x
+Фильтр: trace_x_<PID>
+
+Временные метки:
+Передающая сторона регистрирует системное время TraceController::system_time() и передаёт его при подключении к приёмнику
+Приёмник использует это время для инициализации переменной ProcessModel::_time_delta, которая содержит время между подключением этого процесса и подключением первого процесса в наносекундах.
+Далее передатчик регистрирует время каждого сообщения TraceController::timestamp() - время между текущим моментом и моментом подключения к приёмнику.
+Это время используется в приёмнике:
+message->timestamp + _trace_controller.process_at(message)._time_delta
+
+Для MSVC:
+флаги оптимизации строковых литералов: 
+set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "/GF /FC")
+
+------
+
+bcp build atomic thread system wave chrono inspect boost/interprocess/managed_shared_memory.hpp boost/interprocess/sync/named_sharable_mutex.hpp boost/interprocess/sync/named_mutex.hpp boost/interprocess/sync/named_condition.hpp boost/interprocess/sync/named_condition_any.hpp boost/interprocess/sync/scoped_lock.hpp boost/interprocess/sync/interprocess_condition.hpp boost/multi_index_container.hpp boost/multi_index/member.hpp boost/multi_index/composite_key.hpp boost/multi_index/ordered_index.hpp boost/multi_index/hashed_index.hpp boost/functional/hash.hpp boost/unordered_set.hpp boost/unordered_map.hpp boost/bind.hpp boost/function.hpp boost/atomic.hpp boost/thread.hpp boost/chrono.hpp boost/chrono/duration.hpp /home/nik/build/boost
+
+Компиляция boost с флагом -fPic:
+
+./bootstrap.sh --prefix=<INSTALL_PATH>
+.b2 cxxflags=-fPIC install
+
+Настройки передатчика:
+с помощью переменной окружения TRACE_SERVER_NAME можно установить идентификатор точки подключения для приёмника и передатчика.
+Однако, если для передатчика имя точки подключения задано через аргумент командной строки, то переменная окружения будет проигнорирована.
+
+------ 
+
+Логика архитектуры
+
+LocalConnection - класс, контролирующий соединение с процессом. Осуществляет приём данных от передатчика и передаёт сформированные пакеты в LocalConnectionController. Запускается всегда в отдельном потоке после соединения с новым процессом в TraceServer::add_connection.
+
+LocalConnectionController - класс управления локальным соединением с одним процессом.  Он занимается первичной обработкой входящих пакетов.
+
+Предусмотрены следующие ситуации разрыва соединения:
+1) Завершение приложения
+2) Передатчик отключился
+3) Очистка модели трассы
+4) Сигнал от другого приёмника с просьбой остановить сервер
+
+Только один приёмник с заданным именем сервера(точки подключения) в один момент времени может иметь подключения  передатчиков. Другие приёмники либо должны использовать другие имена точки подключения, либо просить запущеннный приёмник
+прекратить обслуживание. Это реализовано с помощью передачи управляющей команды trace::COMMAND_STOP.
+
+При разрыве соединения и при принудительной остановке приёмника - необходимо обработать находящиеся в буфере LocalConnectionController-а сообщения, чтобы их не потерять.

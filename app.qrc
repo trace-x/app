@@ -1,0 +1,57 @@
+<RCC>
+    <qresource prefix="/">
+        <file>app.qss</file>
+    </qresource>
+    <qresource prefix="/icons">
+        <file alias="size_grip_br">icons/size_grip.png</file>
+        <file alias="right_shift">icons/right_shift.png</file>
+        <file alias="minus">icons/minus.png</file>
+        <file alias="plus">icons/plus.png</file>
+        <file alias="cross">icons/cross.png</file>
+        <file alias="start">icons/play.png</file>
+        <file alias="stop">icons/stop.png</file>
+        <file alias="capture_filter">icons/capture_filter.png</file>
+        <file alias="clear_trace">icons/clear_brush.png</file>
+        <file alias="info">icons/info.png</file>
+        <file alias="callstack">icons/callstack.png</file>
+        <file alias="add_page">icons/add_page.png</file>
+        <file alias="dots">icons/dots.png</file>
+        <file alias="callstack_current">icons/callstack_black.png</file>
+        <file alias="down_arrow_dark">icons/down_arrow_dark.png</file>
+        <file alias="left_arrow">icons/left_arrow_dark.png</file>
+        <file alias="up_arrow_dark">icons/up_arrow_dark.png</file>
+        <file alias="source_code">icons/code_document.png</file>
+        <file alias="right_panel">icons/right_panel.png</file>
+        <file alias="issue_logo">icons/issue.png</file>
+        <file alias="model_logo">icons/model_logo.png</file>
+        <file alias="trace_logo">icons/trace_logo.png</file>
+        <file alias="callstak_logo">icons/callstack_logo.png</file>
+        <file alias="pathes">icons/pathes.png</file>
+        <file alias="settings">icons/settings_64.png</file>
+        <file alias="blob">icons/blob.png</file>
+        <file alias="add_page_dark">icons/add_page_dark.png</file>
+        <file alias="cross_dark">icons/cross_dark.png</file>
+        <file alias="minus_dark">icons/minus_dark.png</file>
+        <file alias="auto_scroll_off">icons/scroll_down.png</file>
+        <file alias="settings_white">icons/settings_white.png</file>
+        <file alias="auto_scroll_on">icons/scroll_down_on.png</file>
+        <file alias="bottom_panel">icons/bottom_panel.png</file>
+        <file alias="bottom_panel_on">icons/bottom_panel_on.png</file>
+        <file alias="right_panel_on">icons/right_panel_on.png</file>
+        <file alias="detach">icons/detach.png</file>
+        <file alias="dots_dark">icons/dots_dark.png</file>
+        <file alias="clock">icons/clock.png</file>
+        <file alias="filter">icons/filter.png</file>
+        <file alias="capture_filter_blue">icons/capture_filter_blue.png</file>
+        <file alias="size_grip_tr">icons/size_grip_tr.png</file>
+        <file alias="minus2">icons/minus2.png</file>
+        <file alias="table">icons/table.png</file>
+        <file alias="table_on">icons/table_on.png</file>
+        <file alias="image">icons/image.png</file>
+        <file alias="arrow_left">icons/arrow_left.png</file>
+        <file alias="arrow_right">icons/arrow_right.png</file>
+        <file alias="down_arrow">icons/arrow_down.png</file>
+        <file alias="up_arrow">icons/arrow_up.png</file>
+        <file alias="check">icons/check.png</file>
+    </qresource>
+</RCC>

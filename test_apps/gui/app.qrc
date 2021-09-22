@@ -1,0 +1,21 @@
+<RCC>
+    <qresource prefix="/image">
+        <file>test_images/rgba32.png</file>
+        <file>test_images/16u_1ch.tif</file>
+        <file>test_images/32f_1ch.tif</file>
+        <file>test_images/mono_binary.bmp</file>
+        <file>test_images/mono_color.bmp</file>
+        <file>test_images/rgb24.bmp</file>
+        <file>test_images/32u_3ch.tif</file>
+        <file>test_images/16u_4ch.tif</file>
+        <file>test_images/8u_2ch.tif</file>
+        <file>test_images/32s_1ch.tif</file>
+        <file>test_images/32s_1ch_2.tif</file>
+        <file>test_images/64f_2ch.tif</file>
+        <file>test_images/16s_2ch.tif</file>
+        <file>test_images/8u_1ch.tif</file>
+    </qresource>
+    <qresource prefix="/test_data">
+        <file alias="unilog_config">test_data/unilog.conf</file>
+    </qresource>
+</RCC>
