@@ -178,7 +178,6 @@ set_target_properties(${PROJECT_NAME} PROPERTIES AUTOUIC ON)
 set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME app_trace_x)
 
 target_compile_definitions(${PROJECT_NAME} PRIVATE TRACE_X_MODULE_NAME="${PROJECT_NAME}")
-target_compile_definitions(${PROJECT_NAME} PRIVATE TRACE_STATICLIB)
 
 if(CPP_STANDARD_FLAG)
   set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS ${CPP_STANDARD_FLAG})
@@ -186,7 +185,7 @@ endif()
 
 ## libtrace_x linking
 
-target_link_libraries(${PROJECT_NAME} trace_x_static)
+target_link_libraries(${PROJECT_NAME} trace_x)
 
 if(${UNIX})
     target_link_libraries(${PROJECT_NAME} dl rt pthread)
