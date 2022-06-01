@@ -505,6 +505,8 @@ public:
         return *this;
     }
 
+    std::string message() const;
+
 protected:
     message_context_t _context;
     fmt::MemoryWriter _writer;

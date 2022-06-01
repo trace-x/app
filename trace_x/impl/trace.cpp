@@ -20,7 +20,6 @@
 
 #include "platform.h"
 #include "types.h"
-#include "stack_trace.h"
 #include "std_restreamer.h"
 
 namespace trace_x
@@ -39,8 +38,6 @@ class TraceTransmitter
     {
         std::string server_name = "trace_x";
         std::string crash_report_prefix;
-
-        bool crash_report_use_gdb = true;
     };
 
 public:
@@ -111,11 +108,6 @@ public:
 
                 _config.server_name = config.get("name", _config.server_name);
                 _config.crash_report_prefix = config.get("crash_report_prefix", _config.crash_report_prefix);
-
-#ifndef _WIN32
-                _stack_trace._use_gdb = config.get("crash_report_use_gdb", _stack_trace._use_gdb);
-                _stack_trace._use_gdb_full = config.get("crash_report_use_gdb_full", _stack_trace._use_gdb_full);
-#endif
             }
             catch(std::exception &e)
             {
@@ -152,10 +144,6 @@ public:
                 }
             }
         }
-
-#ifndef _WIN32
-        _stack_trace._crash_report_prefix = _config.crash_report_prefix;
-#endif
 
         if(const char* server_name = std::getenv(TraceServerNameEnvID))
         {
@@ -549,8 +537,6 @@ public:
 private:
     config_t _config;
 
-    stack_trace::StackTrace _stack_trace;
-
     CriticalSection _cs;
     LocalSocket _socket;
 
@@ -577,6 +563,11 @@ private:
 static TraceTransmitter _trace;
 static StdRestreamer _std_restreamer;
 static x_logger _logger;
+
+std::string trace_base::message() const
+{
+    return _writer.str();
+}
 
 TraceScope::TraceScope(const message_context_t &context): _context(context)
 {
