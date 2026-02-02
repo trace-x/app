@@ -111,12 +111,22 @@ void ProcessModel::append_message(raw_message_t *message)
 
     _trace_controller->register_message_type(message->subtype);
 
-    _index_container.mutex->lock();
+    std::pair<trace_x::filter_index_t::iterator, bool> result;
 
-    auto result = _index_container.index->insert(trace_x::message_filter_t(message->subtype, message->module, message->tid,
-                                                                           message->context, message->function, message->source));
+    try
+    {
+        std::lock_guard<boost::interprocess::named_mutex> lock(*_index_container.mutex);
 
-    _index_container.mutex->unlock();
+        if (_index_container.index->size() > 1000)
+            message->context = 0;
+
+        result = _index_container.index->insert(trace_x::message_filter_t(message->subtype, message->module, message->tid,
+                                                                          message->context, message->function, message->source));
+    }
+    catch (const std::exception& e)
+    {
+        std::cerr << "Failed to insert to _index_container.index: " << e.what() << "; size: " << _index_container.index->size() << std::endl;
+    }
 
     if(result.second)
     {
@@ -124,9 +134,9 @@ void ProcessModel::append_message(raw_message_t *message)
 
         //module_index:
         {
-            QHash<uint64_t, uint16_t>::const_iterator it = _module_index_hash.find(message->module);
+            QHash<uint64_t, uint16_t>::const_iterator it = _module_index_hash.constFind(message->module);
 
-            if(it == _module_index_hash.end())
+            if(it == _module_index_hash.cend())
             {
                 trace_message->module_index = _trace_controller->register_module(QString::fromLocal8Bit(module, int(module_size)), *this);
 
@@ -142,9 +152,9 @@ void ProcessModel::append_message(raw_message_t *message)
 
         //source file path index:
         {
-            QHash<uint64_t, uint16_t>::const_iterator it = _source_index_hash.find(message->source);
+            QHash<uint64_t, uint16_t>::const_iterator it = _source_index_hash.constFind(message->source);
 
-            if(it == _source_index_hash.end())
+            if(it == _source_index_hash.cend())
             {
                 trace_message->source_index = _trace_controller->register_source_file(QString::fromLocal8Bit(source, int(source_size)));
 
@@ -160,9 +170,9 @@ void ProcessModel::append_message(raw_message_t *message)
 
         //function_index:
         {
-            QHash<uint64_t, function_index_t>::const_iterator it = _function_index_hash.find(message->function);
+            QHash<uint64_t, function_index_t>::const_iterator it = _function_index_hash.constFind(message->function);
 
-            if(it == _function_index_hash.end())
+            if(it == _function_index_hash.cend())
             {
                 trace_message->function_index = _trace_controller->register_function(parse_function(function, function_size), trace_message->source_index, message->context != 0);
 
@@ -178,9 +188,9 @@ void ProcessModel::append_message(raw_message_t *message)
 
         //thread_index:
         {
-            QHash<uint64_t, tid_index_t>::const_iterator it = _thread_index_hash.find(message->tid);
+            QHash<uint64_t, tid_index_t>::const_iterator it = _thread_index_hash.constFind(message->tid);
 
-            if(it == _thread_index_hash.end())
+            if(it == _thread_index_hash.cend())
             {
                 trace_message->tid_index = _trace_controller->register_thread(*this, message->tid);
 
@@ -196,9 +206,9 @@ void ProcessModel::append_message(raw_message_t *message)
 
         //context_index:
         {
-            QHash<uint64_t, context_index_t>::const_iterator it = _context_index_hash.find(message->context);
+            QHash<uint64_t, context_index_t>::const_iterator it = _context_index_hash.constFind(message->context);
 
-            if(it == _context_index_hash.end())
+            if(it == _context_index_hash.cend())
             {
                 trace_message->context_index = _trace_controller->register_context(*this, message->context, trace_message->function_index);
 
@@ -247,9 +257,9 @@ void ProcessModel::append_message(raw_message_t *message)
     {
         uint64_t label_id = message->label;
 
-        QHash<uint64_t, label_index_t>::const_iterator it = _label_index_hash.find(label_id);
+        QHash<uint64_t, label_index_t>::const_iterator it = _label_index_hash.constFind(label_id);
 
-        if(it == _label_index_hash.end())
+        if(it == _label_index_hash.cend())
         {
             trace_message->label_index = _trace_controller->register_label(QString::fromLocal8Bit(label, int(label_size)));
 

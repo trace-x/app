@@ -11,6 +11,12 @@
 #include "settings.h"
 #include "trace_service.h"
 
+#include <backward.hpp>
+
+#ifdef WITH_BACKWARD
+backward::SignalHandling stack_trace_handler;
+#endif
+
 class TraceXRegister
 {
 public:

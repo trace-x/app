@@ -13,7 +13,7 @@
 namespace
 {
 
-static const size_t ShmemSize = 6553600;
+static const size_t ShmemSize = 65536000;
 
 }
 
@@ -185,40 +185,48 @@ void LocalConnectionController::register_process(uint64_t pid, uint64_t timestam
 
     emit process_registered();
 
-    _shm_name = QString("%1_pid_%2").arg(_srv_name).arg(pid).toStdString();
-    _mutex_name = _shm_name + "_mutex";
-
-    boost::interprocess::shared_memory_object::remove(_shm_name.c_str());
-    boost::interprocess::named_mutex::remove(_mutex_name.c_str());
-
-    boost::interprocess::permissions access;
-    access.set_unrestricted();
-
-    _filter_shm = boost::interprocess::managed_shared_memory(boost::interprocess::create_only, _shm_name.c_str(), ShmemSize, 0, access);
-
-    _filter_index.index = _filter_shm.construct<trace_x::filter_index_t>(TxFilterIndexID)
-            (trace_x::filter_index_t::ctor_args_list(), trace_x::filter_index_t::allocator_type(_filter_shm.get_segment_manager()));
-
     try
     {
-        _filter_index.mutex = new boost::interprocess::named_mutex(boost::interprocess::create_only, _mutex_name.c_str(), access);
+
+        _shm_name = QString("%1_pid_%2").arg(_srv_name).arg(pid).toStdString();
+        _mutex_name = _shm_name + "_mutex";
+
+        boost::interprocess::shared_memory_object::remove(_shm_name.c_str());
+        boost::interprocess::named_mutex::remove(_mutex_name.c_str());
+
+        boost::interprocess::permissions access;
+        access.set_unrestricted();
+
+        _filter_shm = boost::interprocess::managed_shared_memory(boost::interprocess::create_only, _shm_name.c_str(), ShmemSize, 0, access);
+
+        _filter_index.index = _filter_shm.construct<trace_x::filter_index_t>(TxFilterIndexID)
+                              (trace_x::filter_index_t::ctor_args_list(), trace_x::filter_index_t::allocator_type(_filter_shm.get_segment_manager()));
+
+        try
+        {
+            _filter_index.mutex = new boost::interprocess::named_mutex(boost::interprocess::create_only, _mutex_name.c_str(), access);
 
 #ifdef Q_OS_UNIX
-        // TODO remove this
-        int mutex_fd = ::open(("/dev/shm/sem." + _mutex_name).c_str(), 0);
+            // TODO remove this
+            int mutex_fd = ::open(("/dev/shm/sem." + _mutex_name).c_str(), 0);
 
-        ::fchmod(mutex_fd, access.get_permissions());
+            ::fchmod(mutex_fd, access.get_permissions());
 #endif
 
-        _srv_flag = _filter_shm.construct<int8_t>(TxFlagID)(1);
+            _srv_flag = _filter_shm.construct<int8_t>(TxFlagID)(1);
 
-        _process_model = _trace_controller->register_process(pid, timestamp, process_name, user_name, _filter_index);
+            _process_model = _trace_controller->register_process(pid, timestamp, process_name, user_name, _filter_index);
 
-        _thread.start();
+            _thread.start();
+        }
+        catch(const std::exception &e)
+        {
+            std::cerr << "can`t create mutex " << _mutex_name << " : " << e.what() << std::endl;
+        }
     }
-    catch(const std::exception &e)
+    catch (const std::exception& e)
     {
-        std::cerr << "can`t create mutex " << _mutex_name << " : " << e.what() << std::endl;
+        std::cerr << "LocalConnectionController::register_process " << e.what() << std::endl;
     }
 }
 
@@ -226,36 +234,43 @@ void LocalConnectionController::controller_thread()
 {
     X_CALL;
 
-    raw_message_t *message = 0;
-
-    while(!(QThread::currentThread()->isInterruptionRequested() && (_list.empty() || _drop_buffer)))
+    try
     {
-        _mutex.lock();
+        raw_message_t *message = 0;
 
-        QLinkedList<raw_message_t*>::iterator begin = _list.begin();
-        QLinkedList<raw_message_t*>::iterator end = _list.end() - 1;
-
-        _mutex.unlock();
-
-        for(QLinkedList<raw_message_t*>::iterator it = begin; it != end + 1; ++it)
+        while(!(QThread::currentThread()->isInterruptionRequested() && (_list.empty() || _drop_buffer)))
         {
-            message = *it;
+            _mutex.lock();
 
-            _process_model->append_message(message);
+            QLinkedList<raw_message_t*>::iterator begin = _list.begin();
+            QLinkedList<raw_message_t*>::iterator end = _list.end() - 1;
 
-            delete [] message->data;
-            delete message;
+            _mutex.unlock();
+
+            for(QLinkedList<raw_message_t*>::iterator it = begin; it != end + 1; ++it)
+            {
+                message = *it;
+
+                _process_model->append_message(message);
+
+                delete [] message->data;
+                delete message;
+            }
+
+            _mutex.lock();
+
+            _list.erase(begin, end + 1);
+
+            _mutex.unlock();
+
+            QThread::currentThread()->msleep(100);
         }
 
-        _mutex.lock();
-
-        _list.erase(begin, end + 1);
-
-        _mutex.unlock();
-
-        QThread::currentThread()->msleep(100);
+        // Self desctruction only after processing of all messages(or dropping)
+        this->deleteLater();
     }
-
-    // Self desctruction only after processing of all messages(or dropping)
-    this->deleteLater();
+    catch (const std::exception& e)
+    {
+        std::cerr << "LocalConnectionController::controller_thread(): " << e.what() << std::endl;
+    }
 }

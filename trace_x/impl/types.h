@@ -96,8 +96,6 @@ member<message_filter_t, uint64_t, &message_filter_t::source_id>
 shmem_allocator_f
 > filter_index_t;
 
-typedef boost::interprocess::allocator<trace_x::filter_index_t, boost::interprocess::managed_shared_memory::segment_manager> shmem_allocator_sstf;
-
 struct filter_index
 {
     filter_index():

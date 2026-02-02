@@ -273,7 +273,7 @@ ProcessModel * TraceController::register_process(uint64_t pid, uint64_t timestam
 
     QHash<quint64, pid_index_t>::const_iterator it = _process_id_hash.find(pid);
 
-    if(it == _process_id_hash.end())
+    if(it == _process_id_hash.cend())
     {
         if(!_start_point)
         {
@@ -338,7 +338,7 @@ pid_index_t TraceController::register_process_name(const QString &process_name)
 
     QHash<QString, pid_index_t>::const_iterator it = _process_name_hash.find(process_name);
 
-    if(it == _process_name_hash.end())
+    if(it == _process_name_hash.cend())
     {
         index = _process_names.size();
 
@@ -366,7 +366,7 @@ pid_index_t TraceController::register_user_name(const QString &user_name)
 
     QHash<QString, pid_index_t>::const_iterator it = _process_user_hash.find(user_name);
 
-    if(it == _process_user_hash.end())
+    if(it == _process_user_hash.cend())
     {
         index = _process_users.size();
 
@@ -594,7 +594,7 @@ module_index_t TraceController::register_module(const QString &module, const Pro
 
     QHash<QString, module_index_t>::const_iterator it = _modules_hash.find(module);
 
-    if(it == _modules_hash.end())
+    if(it == _modules_hash.cend())
     {
         index = _modules.size();
 
@@ -624,7 +624,7 @@ source_index_t TraceController::register_source_file(const QString &path)
 
     QHash<QString, source_index_t>::const_iterator it = _sources_hash.find(path);
 
-    if(it == _sources_hash.end())
+    if(it == _sources_hash.cend())
     {
         index = _sources.size();
 
@@ -666,7 +666,7 @@ function_index_t TraceController::register_function(const function_t &function, 
 
         QHash<QString, class_index_t>::const_iterator it = _class_hash.find(class_name);
 
-        if(it == _class_hash.end())
+        if(it == _class_hash.cend())
         {
             class_index = _classes.size();
 
@@ -692,7 +692,7 @@ function_index_t TraceController::register_function(const function_t &function, 
 
     QHash<FunctionID, function_index_t>::const_iterator it = _functions_hash.find(function_id);
 
-    if(it == _functions_hash.end())
+    if(it == _functions_hash.cend())
     {
         fun_index = _functions.size();
 
@@ -762,7 +762,7 @@ label_index_t TraceController::register_label(const QString &var_name)
 
     QHash<QString, label_index_t>::const_iterator it = _variable_hash.find(var_name);
 
-    if(it == _variable_hash.end())
+    if(it == _variable_hash.cend())
     {
         index = _labels.size();
 

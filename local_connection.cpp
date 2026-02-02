@@ -2,6 +2,7 @@
 #include "local_connection_p.h"
 
 #include <stdint.h>
+#include <iostream>
 
 #ifdef Q_OS_WIN
 #include <windows.h>
@@ -211,74 +212,81 @@ void LocalConnection::run()
 {
     X_CALL;
 
-    QLocalSocket socket;
-
-    if(!socket.setSocketDescriptor(_descriptor))
+    try
     {
-        return;
-    }
+        QLocalSocket socket;
 
-    QByteArray message_buffer;
-    qint64 current_frame_size = 0;
-
-    while(!QThread::currentThread()->isInterruptionRequested())
-    {
-        if(socket.waitForReadyRead(10))
+        if(!socket.setSocketDescriptor(_descriptor))
         {
-            while(true)
+            return;
+        }
+
+        QByteArray message_buffer;
+        qint64 current_frame_size = 0;
+
+        while(!QThread::currentThread()->isInterruptionRequested())
+        {
+            if(socket.waitForReadyRead(10))
             {
-                if(current_frame_size != 0)
+                while(true)
                 {
-                    qint64 chunk = qMin(current_frame_size, socket.bytesAvailable());
-
-                    message_buffer.append(socket.read(chunk));
-
-                    current_frame_size -= chunk;
-                }
-
-                if((current_frame_size == 0) && (!message_buffer.isEmpty()))
-                {
-                    bool ack_needed = false;
-
-                    _controller.process_packet(message_buffer, ack_needed);
-
-                    message_buffer.clear();
-
-                    current_frame_size = 0;
-
-                    if(ack_needed)
+                    if(current_frame_size != 0)
                     {
-                        uint8_t data = 0;
+                        qint64 chunk = qMin(current_frame_size, socket.bytesAvailable());
 
-                        socket.write((const char*)(&data), sizeof(data));
-                        socket.waitForBytesWritten();
+                        message_buffer.append(socket.read(chunk));
+
+                        current_frame_size -= chunk;
+                    }
+
+                    if((current_frame_size == 0) && (!message_buffer.isEmpty()))
+                    {
+                        bool ack_needed = false;
+
+                        _controller.process_packet(message_buffer, ack_needed);
+
+                        message_buffer.clear();
+
+                        current_frame_size = 0;
+
+                        if(ack_needed)
+                        {
+                            uint8_t data = 0;
+
+                            socket.write((const char*)(&data), sizeof(data));
+                            socket.waitForBytesWritten();
+                        }
+                    }
+
+                    if(socket.bytesAvailable() >= sizeof(quint64))
+                    {
+                        //read frame size(minus size field)
+                        current_frame_size = *(quint64*)(socket.read(sizeof(quint64)).constData()) - sizeof(quint64);
+
+                        message_buffer.reserve(current_frame_size);
+                    }
+                    else
+                    {
+                        break;
                     }
                 }
+            }
 
-                if(socket.bytesAvailable() >= sizeof(quint64))
-                {
-                    //read frame size(minus size field)
-                    current_frame_size = *(quint64*)(socket.read(sizeof(quint64)).constData()) - sizeof(quint64);
+            if(socket.state() != QLocalSocket::ConnectedState)
+            {
+                emit disconnected(this);
 
-                    message_buffer.reserve(current_frame_size);
-                }
-                else
-                {
-                    break;
-                }
+                break;
             }
         }
 
-        if(socket.state() != QLocalSocket::ConnectedState)
-        {
-            emit disconnected(this);
-
-            break;
-        }
+        socket.readAll();
+        socket.abort();
     }
-
-    socket.readAll();
-    socket.abort();
+    catch (const std::exception& e)
+    {
+        std::cerr << "333333333 " << e.what() << std::endl;
+    }
 }
 
 #endif

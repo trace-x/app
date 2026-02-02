@@ -240,3 +240,12 @@ add_definitions(-Dcimg_display=0)
 ## Installation
 
 install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION bin)
+
+find_package(Backward)
+
+if (Backward_FOUND)
+    target_compile_definitions(${PROJECT_NAME} PUBLIC WITH_BACKWARD)
+    target_link_libraries(${PROJECT_NAME} Backward::Backward)
+endif()
+
+
