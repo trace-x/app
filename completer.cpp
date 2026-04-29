@@ -726,9 +726,7 @@ void TraceCompleter::process_text(const QString &text)
         QString class_name = _controller->filter_class_name(_current_class);
 
         if(prefix.isEmpty() || (_current_class == -1))
-        {
-            class_name = _controller->filter_class_name(_default_filter_set.toList().first());
-        }
+            class_name = _controller->filter_class_name(_default_filter_set.values().constFirst());
 
         _line_edit->set_tip(": " + class_name);
     }
@@ -781,7 +779,9 @@ void TraceCompleter::find_by_class(const QString &prefix, const QString &pattern
     {
         _search_model.setSourceModel(&_message_search_model);
 
-        _search_watcher.setFuture(QtConcurrent::run(this, &TraceCompleter::find_message, QRegExp(pattern, Qt::CaseInsensitive, QRegExp::Wildcard)));
+        _search_watcher.setFuture(QtConcurrent::run([this, pattern]() {
+            find_message(QRegExp(pattern, Qt::CaseInsensitive, QRegExp::Wildcard));
+        }));
     }
     else
     {
@@ -831,7 +831,7 @@ void TraceCompleter::find_message(const QRegExp &regexp)
 
         if(message->type > trace_x::MESSAGE_RETURN)
         {
-            if(message->message_text.contains(regexp))
+            if(regexp.indexIn(message->message_text) != -1)
             {
                 if(!message_set.contains(message->message_text))
                 {

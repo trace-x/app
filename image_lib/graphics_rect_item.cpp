@@ -16,8 +16,6 @@
 #define TRACE_POINT_F(p) TRACE_INFO(#p" (%f, %f)", p.x(), p.y());
 #define TRACE_POINT(p) TRACE_INFO(#p" (%d, %d)", p.x(), p.y());
 
-#include <QTouchDevice>
-
 static QPainterPath qt_graphicsItem_shapeFromPath(const QPainterPath &path, const QPen &pen)
 {
     const qreal penWidthZero = qreal(0.00000001);
@@ -64,10 +62,10 @@ GraphicsRectItem::~GraphicsRectItem()
 }
 
 void GraphicsRectItem::initialize()
-{  
+{
     _alert_counter = 0;
 
-    _show_touch_regions = !QTouchDevice::devices().isEmpty();
+    _show_touch_regions = false;
 
     connect(&_timer, &QTimer::timeout, this, &GraphicsRectItem::alert_1);
 

@@ -1,12 +1,10 @@
 #ifndef COMPLETER_H
 #define COMPLETER_H
 
-#include <QObject>
-
 #include <QLineEdit>
-
 #include <QStandardItemModel>
 #include <QTreeView>
+#include <QRegExp>
 
 #include "trace_model.h"
 #include "trace_model_service.h"

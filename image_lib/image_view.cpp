@@ -163,9 +163,9 @@ void ImageView::wheelEvent(QWheelEvent *event)
 {
     if(scene())
     {
-        int num_steps = event->delta() / 120;
+        int num_steps = event->angleDelta().y() / 120;
 
-        set_scale(transform().m11() * (1.0 + num_steps * _p->zoom_speed), event->pos());
+        set_scale(transform().m11() * (1.0 + num_steps * _p->zoom_speed), event->position().toPoint());
     }
 
     QFrame::wheelEvent(event);

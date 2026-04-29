@@ -1,6 +1,7 @@
 #include "main_window.h"
 #include "ui_main_window.h"
 
+#include <QMetaType>
 #include <QStandardItemModel>
 #include <QScreen>
 #include <QShortcut>
@@ -81,9 +82,7 @@ MainWindow::MainWindow(QWidget *parent) :
     //
 
     qRegisterMetaType<FilterItem>("FilterItem");
-    qRegisterMetaTypeStreamOperators<FilterItem>("FilterItem");
     qRegisterMetaType<FilterGroup>("FilterGroup");
-    qRegisterMetaTypeStreamOperators<FilterGroup>("FilterGroup");
 
     //
 

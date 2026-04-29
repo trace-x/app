@@ -4,6 +4,7 @@
 #include <QList>
 #include <QHash>
 #include <QStandardItem>
+#include <QRegExp>
 
 #include "trace_tools.h"
 

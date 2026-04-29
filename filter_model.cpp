@@ -1176,7 +1176,7 @@ bool FilterModel::removeRows(int row, int count, const QModelIndex &parent)
     {
         for(int i = row; i < row + count; ++i)
         {
-            QStandardItem *item = itemFromIndex(parent.child(i, 0));
+            QStandardItem *item = itemFromIndex(this->index(i, 0, parent));
 
             if(item->type() == FilterGroupItemType)
             {
@@ -1252,7 +1252,7 @@ FilterModel &FilterModel::operator <<(const FilterGroup &filter_group)
     return *this;
 }
 
-bool FilterModel::operator ==(const FilterModel &other)
+bool FilterModel::operator ==(const FilterModel &other) const
 {
     return (this == &other);
 }

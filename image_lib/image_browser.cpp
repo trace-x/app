@@ -153,7 +153,7 @@ void ImageBrowser::set_image(const Image &image)
         ui->x_spin_box->setRange(0, image.display_image.width() - 1);
         ui->y_spin_box->setRange(0, image.display_image.height() - 1);
 
-        ui->table_view->horizontalHeader()->setDefaultSectionSize(ui->table_view->fontMetrics().width(QString::number(0).repeated(image.max_width) + 3));
+        ui->table_view->horizontalHeader()->setDefaultSectionSize(ui->table_view->fontMetrics().horizontalAdvance(QString::number(0).repeated(image.max_width)) + 3);
 
         if(!_pixel_trace_item.isVisible() || !image.display_image.rect().contains(current_cursor))
         {

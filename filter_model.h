@@ -214,7 +214,7 @@ public:
 
 public:
     FilterModel & operator << (const FilterGroup &filter_group);
-    bool operator ==(const FilterModel &other);
+    bool operator ==(const FilterModel &other) const;
 
 signals:
     void error(const QString &message);

@@ -109,7 +109,7 @@ QStandardItem * parse_entry(const Entry &entry, const QRegExp &re)
             QString text = item->data(entry.search_role).toString();
             QString display_text = text;
 
-            if(!display_text.isEmpty() && text.contains(re))
+            if(!display_text.isEmpty() && re.indexIn(text) != -1)
             {
                 if(!entry.remove_equals || !string_set.contains(text))
                 {

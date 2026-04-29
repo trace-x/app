@@ -235,7 +235,7 @@ void TraceTableView::setup_font()
 
         for(int i = 0; i < _model->columnCount(); ++i)
         {
-            setColumnWidth(i, font_metrics.width(_model->column_size_hint(i)));
+            setColumnWidth(i, font_metrics.horizontalAdvance(_model->column_size_hint(i)));
         }
 
         int font_h = QFontMetrics(font()).height() + 5;
@@ -315,7 +315,7 @@ void TraceTableView::wheelEvent(QWheelEvent *event)
 
     if(event->modifiers() & Qt::ControlModifier)
     {
-        int numSteps = event->delta() / 120;
+        int numSteps = event->angleDelta().y() / 120;
 
         numSteps /= qAbs(numSteps);
 

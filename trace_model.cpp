@@ -511,7 +511,7 @@ void TraceEntityModel::set_index_model(const trace_index_t &index_model)
                 }
             }
 
-            append_class_items(class_type, item_set.toList());
+            append_class_items(class_type, item_set.values());
         }
     }
 

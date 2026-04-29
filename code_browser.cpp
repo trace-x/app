@@ -34,7 +34,7 @@ int CodeBrowser::line_number_area_width()
         ++digits;
     }
 
-    int space = 8 + fontMetrics().width(QLatin1Char('9')) * digits;
+    int space = 8 + fontMetrics().horizontalAdvance(QLatin1Char('9')) * digits;
 
     return space;
 }

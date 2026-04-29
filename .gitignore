@@ -32,3 +32,5 @@
 *.app
 /CMakeLists.txt.user
 /config.cmake
+/.vscode/.env
+/.vscode/settings.json

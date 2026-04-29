@@ -1,7 +1,5 @@
 #include "local_server_p.h"
 
-#include "local_connection_p.h"
-
 #include "trace_x/trace_x.h"
 
 #include <boost/interprocess/permissions.hpp>
@@ -141,7 +139,7 @@ bool LocalServerPrivate::listen(const QString &name)
 
     if(!QLocalServer::listen("/tmp/" + name))
     {
-        X_ERROR("can`t run server [{}]: {}", name, QLocalServer::errorString());
+       // X_ERROR("can`t run server [{}]: {}", name, QLocalServer::errorString());
     }
     else
     {

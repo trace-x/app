@@ -1,4 +1,8 @@
+cmake_minimum_required(VERSION 4.2)
+
 project(app_trace_x)
+
+set(CMAKE_CXX_STANDARD 20)
 
 set(CONFIG config.cmake CACHE STRING "User configuration")
 
@@ -7,8 +11,6 @@ if(EXISTS ${CMAKE_SOURCE_DIR}/${CONFIG})
     include(${CMAKE_SOURCE_DIR}/${CONFIG})
 endif()
 
-add_subdirectory(trace_x)
-
 include_directories(third_party)
 
 if(EXISTS ${CMAKE_BINARY_DIR}/build_info.h)
@@ -16,10 +18,13 @@ if(EXISTS ${CMAKE_BINARY_DIR}/build_info.h)
     include_directories(${CMAKE_BINARY_DIR})
 endif()
 
-find_package(QT NAMES Qt6 Qt5 REQUIRED QUIET)
+find_package(fmt REQUIRED)
+find_package(TraceX REQUIRED)
+
+find_package(QT NAMES Qt6 REQUIRED QUIET)
 set(QT Qt${QT_VERSION_MAJOR})
 
-find_package(${QT} COMPONENTS Core Widgets Gui Network PrintSupport)
+find_package(${QT} COMPONENTS Core Widgets Gui Network PrintSupport Core5Compat)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
@@ -206,7 +211,7 @@ endif()
 
 ## Qt linking
 
-target_link_libraries(${PROJECT_NAME} ${QT}::Widgets ${QT}::Network ${QT}::Gui ${QT}::PrintSupport)
+target_link_libraries(${PROJECT_NAME} ${QT}::Widgets ${QT}::Network ${QT}::Gui ${QT}::PrintSupport ${QT}::Core5Compat)
 
 ## Boost linking
 

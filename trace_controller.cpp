@@ -39,8 +39,8 @@ QByteArray make_data_array(const char *data_buffer, QString &message)
     QString message_string = QString::fromLocal8Bit(data_buffer + offset, int(message_size));
     offset += message_size;
 
-    stream << QVector<quint64>::fromStdVector(size) << elem_size << channels << unit_type <<
-              data_format << QVector<quint8>::fromStdVector(band_map) << QVector<quint8>::fromStdVector(axes) <<
+    stream << QVector<quint64>(size.begin(), size.end()) << elem_size << channels << unit_type <<
+              data_format << QVector<quint8>(band_map.begin(), band_map.end()) << QVector<quint8>(axes.begin(), axes.end()) <<
               palette_size << byte_size;
 
     if(palette_size)

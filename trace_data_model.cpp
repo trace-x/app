@@ -15,8 +15,6 @@ TraceDataModel::TraceDataModel(QObject *parent):
     _has_new_messages(false),
     _has_new_indexes(false),
     _emit_refiltered(false),
-    _trace_mutex(QMutex::NonRecursive),
-    _index_mutex(QMutex::NonRecursive),
     _safe_size(0)
 {
     X_CALL;

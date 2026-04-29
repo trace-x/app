@@ -10,6 +10,7 @@
 #include <QHeaderView>
 #include <QMenu>
 #include <QScrollBar>
+#include <QActionGroup>
 
 #include "trace_controller.h"
 
@@ -520,9 +521,7 @@ ProfilerTable::ProfilerTable(TraceController *controller, TraceDataModel *trace_
     QFontMetrics font_metrics(this->font());
 
     for(int i = 0; i < profile_model->columnCount(); ++i)
-    {
-        this->setColumnWidth(i, font_metrics.width(profile_model->column_size_hint(i)));
-    }
+        this->setColumnWidth(i, font_metrics.horizontalAdvance(profile_model->column_size_hint(i)));
 
     int font_h = QFontMetrics(this->font()).height() + 5;
 
@@ -563,7 +562,7 @@ ProfilerTable::ProfilerTable(TraceController *controller, TraceDataModel *trace_
 
     //
 
-    this->sortByColumn(ProfileModel::TotalTime);
+    this->sortByColumn(ProfileModel::TotalTime, Qt::DescendingOrder);
 }
 
 ProfilerTable::~ProfilerTable()

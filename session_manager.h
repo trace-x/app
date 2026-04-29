@@ -3,6 +3,7 @@
 
 #include <QDialog>
 #include <QMenu>
+#include <QActionGroup>
 
 #include "trace_controller.h"
 #include "trace_view_widget.h"
@@ -34,11 +35,11 @@ class SessionListModel;
 class SessionManager : public QDialog
 {
     Q_OBJECT
-    
+
 public:
     SessionManager(QWidget *menu_parent, QWidget *parent = 0);
     ~SessionManager();
-    
+
     QByteArray save_state();
 
     void restore_state(const QByteArray &data);
