@@ -24,7 +24,7 @@ find_package(TraceX REQUIRED)
 find_package(QT NAMES Qt6 REQUIRED QUIET)
 set(QT Qt${QT_VERSION_MAJOR})
 
-find_package(${QT} COMPONENTS Core Widgets Gui Network PrintSupport Core5Compat)
+find_package(${QT} COMPONENTS Core Widgets Gui Network Core5Compat)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
@@ -211,7 +211,7 @@ endif()
 
 ## Qt linking
 
-target_link_libraries(${PROJECT_NAME} ${QT}::Widgets ${QT}::Network ${QT}::Gui ${QT}::PrintSupport ${QT}::Core5Compat)
+target_link_libraries(${PROJECT_NAME} ${QT}::Widgets ${QT}::Network ${QT}::Gui ${QT}::Core5Compat)
 
 ## Boost linking
 
